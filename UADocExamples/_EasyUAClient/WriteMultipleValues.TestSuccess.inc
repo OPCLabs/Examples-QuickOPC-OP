@@ -1,0 +1,68 @@
+// $Header: $
+// Copyright (c) CODE Consulting and Development, s.r.o., Plzen. All rights reserved.
+
+//#region Example
+// This example shows how to write values into 3 nodes at once, test for
+// success of each write and display the exception message in case of failure.
+//
+// Find all latest examples here : https://opclabs.doc-that.com/files/onlinedocs/OPCLabs-OpcStudio/Latest/examples.html .
+
+class procedure WriteMultipleValues.TestSuccess;
+var
+  Arguments: OleVariant;
+  Client: OpcLabs_EasyOpcUA_TLB._EasyUAClient;
+  I: Cardinal;
+  WriteResult: _UAWriteResult;
+  WriteValueArguments1, WriteValueArguments2, WriteValueArguments3: _UAWriteValueArguments;
+  Results: OleVariant;
+begin
+  WriteValueArguments1 := CoUAWriteValueArguments.Create;
+  WriteValueArguments1.EndpointDescriptor.UrlString := 
+    //'http://opcua.demo-this.com:51211/UA/SampleServer';
+    //'https://opcua.demo-this.com:51212/UA/SampleServer/';
+    'opc.tcp://opcua.demo-this.com:51210/UA/SampleServer';
+  WriteValueArguments1.NodeDescriptor.NodeId.ExpandedText := 'nsu=http://test.org/UA/Data/ ;i=10221';
+  WriteValueArguments1.Value := 23456;
+
+  WriteValueArguments2 := CoUAWriteValueArguments.Create;
+  WriteValueArguments2.EndpointDescriptor.UrlString := 
+    //'http://opcua.demo-this.com:51211/UA/SampleServer';
+    //'https://opcua.demo-this.com:51212/UA/SampleServer/';
+    'opc.tcp://opcua.demo-this.com:51210/UA/SampleServer';
+  WriteValueArguments2.NodeDescriptor.NodeId.ExpandedText := 'nsu=http://test.org/UA/Data/ ;i=10226';
+  WriteValueArguments2.Value := 'This string cannot be converted to Double';
+
+  WriteValueArguments3 := CoUAWriteValueArguments.Create;
+  WriteValueArguments3.EndpointDescriptor.UrlString := 
+    //'http://opcua.demo-this.com:51211/UA/SampleServer';
+    //'https://opcua.demo-this.com:51212/UA/SampleServer/';
+    'opc.tcp://opcua.demo-this.com:51210/UA/SampleServer';
+  WriteValueArguments3.NodeDescriptor.NodeId.ExpandedText := 'nsu=http://test.org/UA/Data/ ;s=UnknownNode';
+  WriteValueArguments3.Value := 'ABC';
+
+  Arguments := VarArrayCreate([0, 2], varVariant);
+  Arguments[0] := WriteValueArguments1;
+  Arguments[1] := WriteValueArguments2;
+  Arguments[2] := WriteValueArguments3;
+
+  // Instantiate the client object
+  Client := CoEasyUAClient.Create;
+
+  // Modify values of nodes
+  TVarData(Results).VType := varArray or varVariant;
+  TVarData(Results).VArray := PVarArray(Client.WriteMultipleValues(Arguments));
+
+  // Display results
+  for I := VarArrayLowBound(Results, 1) to VarArrayHighBound(Results, 1) do
+  begin
+    WriteResult := IInterface(Results[I]) as _UAWriteResult;
+    if WriteResult.Succeeded then
+      WriteLn('Result ', I, ' success')
+    else
+      WriteLn('Result ', I, ': ', WriteResult.Exception.GetBaseException.Message);
+  end;
+
+  VarClear(Results);
+  VarClear(Arguments);
+end;
+//#endregion Example

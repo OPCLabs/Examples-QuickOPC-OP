@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{83CE3E1D-22BA-4F06-BFDD-B992D91AB631}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="DocExamples\DocExamples.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="UADocExamples\UADocExamples.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="ReadAndDisplayValue\ReadAndDisplayValue.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="EasyOpcUADemo\EasyOpcUADemo.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="DocExamples">
+        <MSBuild Projects="DocExamples\DocExamples.dproj"/>
+    </Target>
+    <Target Name="DocExamples:Clean">
+        <MSBuild Projects="DocExamples\DocExamples.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="DocExamples:Make">
+        <MSBuild Projects="DocExamples\DocExamples.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="UADocExamples">
+        <MSBuild Projects="UADocExamples\UADocExamples.dproj"/>
+    </Target>
+    <Target Name="UADocExamples:Clean">
+        <MSBuild Projects="UADocExamples\UADocExamples.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="UADocExamples:Make">
+        <MSBuild Projects="UADocExamples\UADocExamples.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ReadAndDisplayValue">
+        <MSBuild Projects="ReadAndDisplayValue\ReadAndDisplayValue.dproj"/>
+    </Target>
+    <Target Name="ReadAndDisplayValue:Clean">
+        <MSBuild Projects="ReadAndDisplayValue\ReadAndDisplayValue.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ReadAndDisplayValue:Make">
+        <MSBuild Projects="ReadAndDisplayValue\ReadAndDisplayValue.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EasyOpcUADemo">
+        <MSBuild Projects="EasyOpcUADemo\EasyOpcUADemo.dproj"/>
+    </Target>
+    <Target Name="EasyOpcUADemo:Clean">
+        <MSBuild Projects="EasyOpcUADemo\EasyOpcUADemo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EasyOpcUADemo:Make">
+        <MSBuild Projects="EasyOpcUADemo\EasyOpcUADemo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="DocExamples;UADocExamples;ReadAndDisplayValue;EasyOpcUADemo"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="DocExamples:Clean;UADocExamples:Clean;ReadAndDisplayValue:Clean;EasyOpcUADemo:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="DocExamples:Make;UADocExamples:Make;ReadAndDisplayValue:Make;EasyOpcUADemo:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

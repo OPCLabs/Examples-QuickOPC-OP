@@ -1,0 +1,54 @@
+// $Header: $
+// Copyright (c) CODE Consulting and Development, s.r.o., Plzen. All rights reserved.
+
+//#region Example
+// This example shows how to subscribe to changes of a single item and display the value of the item with each change.
+//
+// Find all latest examples here : https://opclabs.doc-that.com/files/onlinedocs/OPCLabs-OpcStudio/Latest/examples.html .
+
+type
+  TSubscribeItem_ClientEventHandlers = class
+    // Item changed event handler
+    procedure OnItemChanged(
+      ASender: TObject;
+      sender: OleVariant;
+      const eventArgs: _EasyDAItemChangedEventArgs);
+  end;
+
+procedure TSubscribeItem_ClientEventHandlers.OnItemChanged(
+  ASender: TObject;
+  sender: OleVariant;
+  const eventArgs: _EasyDAItemChangedEventArgs);
+begin
+  if eventArgs.Succeeded then
+    WriteLn(eventArgs.Vtq.ToString)
+  else
+    WriteLn(Format('*** Failure: %s', [eventArgs.ErrorMessageBrief]));
+end;
+
+class procedure SubscribeItem.Main;
+var
+  Client: TEasyDAClient;
+  ClientEventHandlers: TSubscribeItem_ClientEventHandlers;
+begin
+  // Instantiate the client object and hook events
+  Client := TEasyDAClient.Create(nil);
+  ClientEventHandlers := TSubscribeItem_ClientEventHandlers.Create;
+  Client.OnItemChanged := ClientEventHandlers.OnItemChanged;
+
+  Client.SubscribeItem('', 'OPCLabs.KitServer.2', 'Simulation.Random', 1000);
+
+  WriteLn('Processing item changed events for 1 minute...');
+  PumpSleep(60*1000);
+
+  WriteLn('Unsubscribing...');
+  Client.UnsubscribeAllItems;
+
+  WriteLn('Waiting for 5 seconds...');
+  PumpSleep(5*1000);
+
+  WriteLn('Finished.');
+  FreeAndNil(Client);
+  FreeAndNil(ClientEventHandlers);
+end;
+//#endregion Example
